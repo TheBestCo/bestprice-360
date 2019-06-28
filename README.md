@@ -4,7 +4,7 @@
 <script>
 (function (a, b, c, d, s) {a.__bp360 = c;a[c] = a[c] || function (){(a[c].q = a[c].q || []).push(arguments);};
 s = b.createElement('script'); s.async = true; s.src = c; b.body.appendChild(s);})
-(window, document, 'bp', 'https://360.bestprice.gr/360.js');
+(window, document, 'bp', '//360.bestprice.gr/360.js');
 
 bp('connect', 'BESTPRICE_360_KEY_HERE');
 </script

@@ -50,3 +50,6 @@ bp('debug');
 ```
 
 Will enable loggging.
+
+### Notes
+- If Skroutz Analytics is deployed, then - for convenience - all needed is inserting the snippet code.

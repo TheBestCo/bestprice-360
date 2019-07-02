@@ -19,6 +19,9 @@ bp('addOrder', {
   revenue:  '1315.25',  // Grand Total (Cost + Tax +Shipping).
   shipping: '5.45',     // Shipping Cost
   tax:      '301.25'    // Tax.
+  
+  method: 'card|paypal|ondelivery|paypal'
+  currency: 'euro',
 });
 ```
 

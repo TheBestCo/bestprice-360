@@ -20,8 +20,10 @@ bp('addOrder', {
   shipping: '5.45',     // Shipping Cost
   tax:      '301.25'    // Tax.
   
-  method: 'card|paypal|ondelivery|paypal'
-  currency: 'euro',
+  method: 'card|paypal|ondelivery|paypal' (optional)
+  currency: 'euro', (optional)
+  
+//  products: [] // We can pass them here
 });
 ```
 

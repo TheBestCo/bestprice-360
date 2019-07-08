@@ -7,7 +7,7 @@ s = b.createElement('script'); s.async = true; s.src = d; b.body.appendChild(s);
 (window, document, 'bp', '//360.bestprice.gr/360.js');
 
 bp('connect', 'BESTPRICE_360_KEY_HERE');
-</script
+</script>
 ```
 
 ## Actions

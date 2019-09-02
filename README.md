@@ -1,5 +1,10 @@
 ## Snippet
 
+Place the following snipet right before closing the `</body>` tag.
+
+Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360º key provided by the BestPrice team.
+
+
 ```html
 <script>
 (function (a, b, c, d, s) {a.__bp360 = c;a[c] = a[c] || function (){(a[c].q = a[c].q || []).push(arguments);};
@@ -11,6 +16,8 @@ bp('connect', 'BESTPRICE_360_KEY_HERE');
 ```
 
 ## Actions
+
+In order to track orders and products, the following two methods are to be used.
 
 ### addOrder
 ```js

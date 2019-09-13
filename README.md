@@ -1,6 +1,6 @@
 ## Snippet
 
-Place the following snipet right before closing the `</body>` tag.
+Place the following snipet right before closing the `</body>` tag (not inside `<head>`).
 
 Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360º key provided by the BestPrice team.
 

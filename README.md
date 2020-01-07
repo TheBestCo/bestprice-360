@@ -1,3 +1,19 @@
+The easiest way to install BestPrice 360º in your store is the plugin developed for the platform your store is based on.
+
+Here are the platform we support so far (follow the link to install the plugin)
+
+- [OpenCart](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118&filter_member=bestpricegr)
+- Magento
+  - [M1](https://marketplace.magento.com/bestprice-bestprice-analytics.html)
+  - [M2](https://marketplace.magento.com/bestprice-bestpriceanalytics.html)
+- [Woocommerce](https://wordpress.org/plugins/bestprice-analytics-integration/)
+- [CsCart](https://marketplace.cs-cart.com/bestprice-analytics-360.html)
+- PrestaShop (coming soon)
+
+----
+
+If your store is not based on any of the platform listed above, you can install the script using the "manual" method that follows.
+
 ## Snippet
 
 Place the following snipet right before closing the `</body>` tag (not inside `<head>`).

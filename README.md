@@ -8,7 +8,7 @@ Here are the platform we support so far (follow the link to install the plugin)
   - [M2](https://marketplace.magento.com/bestprice-bestpriceanalytics.html)
 - [Woocommerce](https://wordpress.org/plugins/bestprice-analytics-integration/)
 - [CsCart](https://marketplace.cs-cart.com/bestprice-analytics-360.html)
-- [PrestaShop](https://www.bestprice.gr/public/assets/360/prestashop_bestpriceanalytics-1.6.x-1.7.x-1.0.0.zip) (Zip file)
+- [PrestaShop](https://www.bestprice.gr/public/assets/360/prestashop_bestpriceanalytics-1.6.x-1.7.x-1.0.1.zip) (Zip file)
 
 ----
 

@@ -56,7 +56,7 @@ bp('addProduct', {
   orderId:   '123456',                                    // Order ID. Required. (alias: order_id)
   productId: '111222',                                    // Product ID. Required. (alias: product_id)
   title:       'Apple IPhone 6 Plus (16GB) Space Gray EU',  // Product title. Required. (alias: name)
-  price:      '654.90',                                    // Price. Required.
+  price:      '654.90',                                    // Price. Required. (Should include tax)
   quantity:   '2'                                          // Quantity. Required.
 });
 ```

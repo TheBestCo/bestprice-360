@@ -1,4 +1,4 @@
-The easiest way to install BestPrice 360º in your store is the plugin developed for the platform your store is based on.
+The easiest way to install BestPrice 360 in your store is the plugin developed for the platform your store is based on.
 
 Here are the platform we support so far (follow the link to install the plugin)
 
@@ -18,7 +18,7 @@ If your store is not based on any of the platform listed above, you can install 
 
 Place the following snipet right before closing the `</body>` tag (not inside `<head>`).
 
-Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360º key provided by the BestPrice team.
+Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key provided by the BestPrice team.
 
 
 ```html
@@ -38,29 +38,29 @@ In order to track orders and products, the following two methods are to be used.
 ### addOrder
 ```js
 bp('addOrder', {
-  orderId: '123456',    // Order ID. Required. (alias: order_id)
-  revenue:  '1315.25',  // Grand Total (Cost + Tax +Shipping).
-  shipping: '5.45',     // Shipping Cost
-  tax:      '301.25'    // Tax.
+  orderId:  '123456',                       // Order ID (alias: order_id)           [Required] 
+  revenue:  '1315.25',                      // Grand Total (Cost + Tax + Shipping)  [Required]
+  shipping: '5.45',                         // Shipping Cost                        [Required]
+  tax:      '301.25'                        // Tax                                  [Required]
   
-  method: 'card|paypal|ondelivery|deposit' (optional)
-  currency: 'euro', (optional)
+  method: 'card|paypal|ondelivery|deposit'  // [Optional]
+  currency: 'euro',                         // [Optional]
   
-//  products: [] // We can pass them here
+//  products: []                            // You can pass them here
 });
 ```
 
 ### addProduct(s?)
 ```js
 bp('addProduct', {
-  orderId:   '123456',                                    // Order ID. Required. (alias: order_id)
-  productId: '111222',                                    // Product ID. Required. (alias: product_id)
-  title:       'Apple IPhone 6 Plus (16GB) Space Gray EU',  // Product title. Required. (alias: name)
-  price:      '654.90',                                    // Price. Required. (Should include tax)
-  quantity:   '2'                                          // Quantity. Required.
+  orderId:   '123456',                         // Order ID (alias: order_id)      [Required]
+  productId: '111222',                         // Product ID (alias: product_id)  [Required]
+  title:     'Apple IPhone 11 (64GB) Red EU',  // Product Title (alias: name)     [Required]
+  price:     '654.90',                         // Price, should include tax       [Required]
+  quantity:  '2'                               // Quantity                        [Required]
 });
 ```
-Or you can pass an array
+Or you can pass an array.
 
 ```js
 bp('addProduct', [products])`;
@@ -72,7 +72,7 @@ bp('addProduct', [products])`;
 bp('debug');
 ```
 
-Will enable loggging.
+Will enable logging.
 
 ### Notes
 - If Skroutz Analytics is deployed, then - for convenience - all needed is inserting the snippet code.

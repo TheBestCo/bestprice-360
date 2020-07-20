@@ -1,6 +1,6 @@
 The easiest way to install BestPrice 360 in your store is the plugin developed for the platform your store is based on.
 
-Here are the platform we support so far (follow the link to install the plugin)
+Here are the platform we support so far follow the link to install the plugin):
 
 - [OpenCart](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118&filter_member=bestpricegr)
 - Magento
@@ -18,7 +18,7 @@ If your store is not based on any of the platform listed above, you can install 
 
 Place the following snipet right before closing the `</body>` tag (not inside `<head>`).
 
-Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key provided by the BestPrice team.
+Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key provided by the BestPrice Team.
 
 
 ```html
@@ -60,7 +60,7 @@ bp('addProduct', {
   quantity:  '2'                               // Quantity                        [Required]
 });
 ```
-Or you can pass an array.
+Or, you can pass an array like so:
 
 ```js
 bp('addProduct', [products])`;
@@ -75,4 +75,4 @@ bp('debug');
 Will enable logging.
 
 ### Notes
-- If Skroutz Analytics is deployed, then - for convenience - all needed is inserting the snippet code.
+- If Skroutz Analytics is deployed, then - for convenience - all that's needed is inserting the default snippet code.

@@ -41,9 +41,9 @@ bp('addOrder', {
   orderId:  '123456',                       // Order ID (alias: order_id)           [Required] 
   revenue:  '1315.25',                      // Grand Total (Cost + Tax + Shipping)  [Required]
   shipping: '5.45',                         // Shipping Cost                        [Required]
-  tax:      '301.25'                        // Tax                                  [Required]
+  tax:      '301.25',                        // Tax                                  [Required]
   
-  method: 'card|paypal|ondelivery|deposit'  // [Optional]
+  method: 'card|paypal|ondelivery|deposit',  // [Optional]
   currency: 'euro',                         // [Optional]
   
 //  products: []                            // You can pass them here

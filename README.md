@@ -18,6 +18,8 @@ If your store is not based on any of the platform listed above, you can install 
 
 Place the following snipet right before closing the `</body>` tag (not inside `<head>`).
 
+NOTE: The snippet need to be added to the procuct page and to the cart page. Ideally, though, it should be added to all pages.
+
 Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key provided by the BestPrice Team.
 
 

@@ -3,9 +3,7 @@ The easiest way to install BestPrice 360 in your store is the plugin developed f
 Here are the platform we support so far follow the link to install the plugin):
 
 - [OpenCart](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118&filter_member=bestpricegr)
-- Magento
-  - [M1](https://marketplace.magento.com/bestprice-bestprice-analytics.html)
-  - [M2](https://marketplace.magento.com/bestprice-bestpriceanalytics.html)
+- [Magento](https://marketplace.magento.com/bestprice-bestpriceanalytics.html)
 - [Woocommerce](https://wordpress.org/plugins/bestprice-analytics-integration/)
 - [CsCart](https://marketplace.cs-cart.com/bestprice-analytics-360.html)
 - [PrestaShop](https://www.bestprice.gr/public/assets/360/prestashop_bestpriceanalytics-1.6.x-1.7.x-1.0.2.zip) (Zip file)

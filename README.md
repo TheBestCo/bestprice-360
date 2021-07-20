@@ -24,7 +24,7 @@ Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key pr
 ```html
 <script>
 (function (a, b, c, d, s) {a.__bp360 = c;a[c] = a[c] || function (){(a[c].q = a[c].q || []).push(arguments);};
-s = b.createElement('script'); s.async = true; s.src = d; (b.body || b.head).appendChild(s);})
+s = b.createElement('script'); s.async = true; s.src = d; s.charset = 'utf-8'; (b.body || b.head).appendChild(s);})
 (window, document, 'bp', '//360.bestprice.gr/360.js');
 
 bp('connect', 'BESTPRICE_360_KEY_HERE');

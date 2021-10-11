@@ -1,8 +1,8 @@
 The easiest way to install BestPrice 360 in your store is the plugin
 developed for the platform your store is based on.
 
-Here are the platform we support so far follow the link to install the
-plugin):
+Here are the platforms we support so far. Follow the link to install the
+plugin:
 
 -  `OpenCart <https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118&filter_member=bestpricegr>`__
 -  `Magento <https://marketplace.magento.com/bestprice-bestpriceanalytics.html>`__
@@ -13,14 +13,14 @@ plugin):
 
 --------------
 
-If your store is not based on any of the platform listed above, you can
+If your store is not based on any of the platforms listed above, you can
 install the script using the "manual" method that follows.
 
 Snippet
 -------
 
-Place the following snipet right before closing the ``</body>`` tag (not
-inside ``<head>``).
+Place the following snippet right before closing the ``</body>`` tag
+(not inside ``<head>``).
 
 NOTE: The snippet need to be added to the product page and to the cart
 page. Ideally, though, it should be added to all pages.
@@ -50,15 +50,15 @@ addOrder
 .. code:: js
 
     bp('addOrder', {
-      orderId:  '123456',                       // Order ID (alias: order_id)           [Required] 
-      revenue:  '1315.25',                      // Grand Total (Cost + Tax + Shipping)  [Required]
-      shipping: '5.45',                         // Shipping Cost                        [Required]
+      orderId:  '123456',                        // Order ID (alias: order_id)           [Required] 
+      revenue:  '1315.25',                       // Grand Total (Cost + Tax + Shipping)  [Required]
+      shipping: '5.45',                          // Shipping Cost                        [Required]
       tax:      '301.25',                        // Tax                                  [Required]
-      
+
       method: 'card|paypal|ondelivery|deposit',  // [Optional]
-      currency: 'euro',                         // [Optional]
-      
-    //  products: []                            // You can pass them here
+      currency: 'euro',                          // [Optional]
+
+      // products: []                            // You can pass them here
     });
 
 addProduct(s?)
@@ -78,7 +78,7 @@ Or, you can pass an array like so:
 
 .. code:: js
 
-    bp('addProduct', [products])`;
+    bp('addProduct', [products]);
 
 debug
 ~~~~~

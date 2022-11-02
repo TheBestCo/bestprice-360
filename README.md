@@ -76,3 +76,4 @@ Will enable logging.
 
 ### Notes
 - If Skroutz Analytics is deployed, then - for convenience - all that's needed is inserting the default snippet code.
+- The product urls submitted via the XML feed should match the canonical urls of the product pages. If they don’t, BestPrice 360 won’t work properly on some browsers.

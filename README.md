@@ -43,7 +43,7 @@ bp('addOrder', {
   shipping: '5.45',                          // Shipping Cost                        [Required]
   tax:      '301.25',                        // Tax                                  [Required]
 
-  method: 'card|paypal|ondelivery|deposit',  // [Optional]
+  method: 'card|paypal|ondelivery|deposit|atstore',  // [Optional]
   currency: 'euro',                          // [Optional]
 
   // products: []                            // You can pass them here

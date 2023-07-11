@@ -74,5 +74,9 @@ bp('debug');
 
 Will enable logging.
 
+## CORS
+
+If you are utilizing a [CORS policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), you will need to include entries for `*.bestprice.gr` on `script-src` and `connect-src` directives. Otherwise, the network requests needed will be blocked.
+
 ## Notes
-- The product urls submitted via the XML feed should match the canonical urls of the product pages. If they don’t, BestPrice 360 won’t work properly on some browsers.
+- The product URLs submitted via the XML feed should match the canonical URLs of the product pages. BestPrice 360 won’t work properly on some browsers if they don't.

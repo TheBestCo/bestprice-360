@@ -1,4 +1,4 @@
-The easiest way to install [BestPrice](https://www.bestprice.gr) 360 in your store is the plugin developed for the platform your store is based on.
+The easiest way to install [BestPrice](https://www.bestprice.gr) 360º in your store is the plugin developed for the platform your store is based on.
 
 Here are the platforms we support so far. Follow the link to install the plugin:
 

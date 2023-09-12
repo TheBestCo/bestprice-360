@@ -3,7 +3,9 @@ The easiest way to install [BestPrice](https://www.bestprice.gr) 360º in your s
 Here are the platforms we support so far. Follow the link to install the plugin:
 
 - [OpenCart](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118&filter_member=bestpricegr)
-- [Magento](https://marketplace.magento.com/bestprice-bestpriceanalytics.html)
+- Magento
+  - [Marketplace](https://marketplace.magento.com/bestprice-bestpriceanalytics.html)
+  - [Download](https://www.bestprice.gr/public/assets/360/magento_bestprice_bestpriceanalytics_2.x-1.0.6.zip)
 - [Woocommerce](https://wordpress.org/plugins/bestprice-analytics-integration/)
 - [CsCart](https://marketplace.cs-cart.com/bestprice-analytics-360.html)
 - [PrestaShop](https://www.bestprice.gr/public/assets/360/prestashop_bestpriceanalytics-1.6.x-1.7.x-1.0.2.zip) (Zip file)

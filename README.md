@@ -2,7 +2,7 @@ The easiest way to install [BestPrice](https://www.bestprice.gr) 360º in your s
 
 Here are the platforms we support so far. Follow the link to install the plugin:
 
-- OpenCart()
+- OpenCart
   - [Marketplace](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118&filter_member=bestpricegr)
   - [Download v2.0](https://www.bestprice.gr/public/360-plugins/opencart/2.0/opencart_bestprice.analytics.2.0-1.0.8.ocmod.zip)
   - [Download v2.1](https://www.bestprice.gr/public/360-plugins/opencart/2.1/opencart_bestprice.analytics.2.1-1.0.8.ocmod.zip)

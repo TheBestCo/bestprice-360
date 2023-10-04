@@ -9,7 +9,7 @@ plugin:
 -  `Magento <https://marketplace.magento.com/bestprice-bestpriceanalytics.html>`__
 -  `Woocommerce <https://wordpress.org/plugins/bestprice-analytics-integration/>`__
 -  `CsCart <https://marketplace.cs-cart.com/bestprice-analytics-360.html>`__
--  `PrestaShop <https://www.bestprice.gr/public/assets/360/prestashop_bestpriceanalytics-1.6.x-1.7.x-1.0.2.zip>`__
+-  `PrestaShop <https://www.bestprice.gr/public/360-plugins/prestashop/prestashop_bestpriceanalytics-1.6x-1.7x-8.0x-1.0.6.zip>`__
    (Zip file)
 
 --------------

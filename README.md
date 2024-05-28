@@ -28,7 +28,7 @@ If your store is not based on any of the platforms listed above, you can install
 
 Place the following snippet right before closing the `</body>` tag (not inside `<head>`).
 
-NOTE: The snippet need to be added to the product page and to the cart page. Ideally, though, it should be added to all pages.
+NOTE: The snippet must be added to the product and cart pages. Ideally, though, it should be added to all pages. Also, the snippet should always be served (not after accepting cookies, etc.).
 
 Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key provided by the BestPrice Team.
 
@@ -45,7 +45,7 @@ bp('connect', 'BESTPRICE_360_KEY_HERE');
 
 ## Actions
 
-In order to track orders and products, the following two methods are to be used.
+The following two methods are to be used to track orders and products.
 
 ### addOrder
 ```js
@@ -88,7 +88,7 @@ Will enable logging.
 
 ## CORS
 
-If you are utilizing a [CORS policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), you will need to include entries for `*.bestprice.gr` on `script-src` and `connect-src` directives. Otherwise, the network requests needed will be blocked.
+If you are utilizing a [CORS policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), you will need to include entries for `*.bestprice.gr` on `script-src` and `connect-src` directives. Otherwise, the network requests that are needed will be blocked.
 
 ## Notes
 - The product URLs submitted via the XML feed should match the canonical URLs of the product pages. BestPrice 360 won’t work properly on some browsers if they don't.

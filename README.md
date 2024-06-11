@@ -2,19 +2,10 @@ The easiest way to install [BestPrice](https://www.bestprice.gr) 360º in your s
 
 Here are the platforms we support so far. Follow the link to install the plugin:
 
-- OpenCart
-  - [Marketplace](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118&filter_member=bestpricegr)
-  - [Download v2.0](https://www.bestprice.gr/public/360-plugins/opencart/2.0/opencart_bestprice.analytics.2.0-1.0.8.ocmod.zip)
-  - [Download v2.1](https://www.bestprice.gr/public/360-plugins/opencart/2.1/opencart_bestprice.analytics.2.1-1.0.8.ocmod.zip)
-  - [Download v2.2](https://www.bestprice.gr/public/360-plugins/opencart/2.2/opencart_bestprice.analytics.2.2-1.0.8.ocmod.zip)
-  - [Download v2.3](https://www.bestprice.gr/public/360-plugins/opencart/2.3/opencart_bestprice.analytics.2.3-1.0.8.ocmod.zip)
-  - [Download v3.x](https://www.bestprice.gr/public/360-plugins/opencart/3.x/opencart_bestprice.analytics.3.x-1.0.8.ocmod.zip)
-  - [Download v4.0.1](https://www.bestprice.gr/public/360-plugins/opencart/4.0.1/bestpriceanalytics.ocmod.zip)
-  - [Download v4.0.2](https://www.bestprice.gr/public/360-plugins/opencart/4.0.2/bestpriceanalytics.ocmod.zip)
+- [Woocommerce](https://wordpress.org/plugins/bestprice-analytics-integration/)
 - Magento
   - [Marketplace](https://marketplace.magento.com/bestprice-bestpriceanalytics.html)
   - [Download](https://www.bestprice.gr/public/assets/360/magento_bestprice_bestpriceanalytics_2.x-1.0.6.zip)
-- [Woocommerce](https://wordpress.org/plugins/bestprice-analytics-integration/)
 - CsCart
   - [Marketplace](https://marketplace.cs-cart.com/bestprice-analytics-360.html)
   - [Download](https://www.bestprice.gr/public/360-plugins/cscart/4.x/cs-cart-bestpriceanalytics_4.x-1.0.5.zip)

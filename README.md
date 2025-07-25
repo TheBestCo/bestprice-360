@@ -15,6 +15,10 @@ Here are the platforms we support so far. Follow the link to install the plugin:
 
 If your store is not based on any of the platforms listed above, you can install the script using the "manual" method that follows.
 
+**Important note for Shopify users**:
+<br>
+Due to recent architectural changes in Shopify (Checkout Extensibility model), BestPrice 360 cannot currently function properly on stores that do not use Shopify Plus. Specifically, the required tracking script (`360.js`) cannot be executed in the new checkout environment, as it lacks access to the page DOM and external JavaScript files.
+
 ## Snippet
 
 Place the following snippet right before closing the `</body>` tag (not inside `<head>`).

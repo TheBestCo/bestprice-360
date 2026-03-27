@@ -1,3 +1,15 @@
+# BestPrice 360 Installation Guide
+
+## Table of Contents
+- [Plugins](#plugins)
+- [Custom Installation](#custom-installation)
+- [Shopify Integration](#shopify-integration)
+- [Useful Notes for All Integrations](#useful-notes-for-all-integrations)
+
+---
+
+## Plugins
+
 The easiest way to install [BestPrice](https://www.bestprice.gr) 360º in your store is the plugin developed for the platform your store is based on.
 
 Here are the platforms we support so far. Follow the link to install the plugin:
@@ -11,21 +23,19 @@ Here are the platforms we support so far. Follow the link to install the plugin:
   - [Download](https://www.bestprice.gr/public/360-plugins/cscart/4.x/cs-cart-bestpriceanalytics_4.x-1.0.5.zip)
 - [PrestaShop](https://www.bestprice.gr/public/360-plugins/prestashop/prestashop_bestpriceanalytics-1.6x-1.7x-8.x-1.0.6.zip) (Zip file)
 
-----
+---
+
+## Custom Installation
 
 If your store is not based on any of the platforms listed above, you can install the script using the "manual" method that follows.
 
-**Important note for Shopify users**:
-<br>
-Due to recent architectural changes in Shopify (Checkout Extensibility model), BestPrice 360 cannot currently function properly on stores that do not use Shopify Plus. Specifically, the required tracking script (`360.js`) cannot be executed in the new checkout environment, as it lacks access to the page DOM and external JavaScript files.
-
-## Snippet
+### Snippet
 
 Place the following snippet right before closing the `</body>` tag (not inside `<head>`).
 
 NOTE: The snippet must be added to the product and cart pages. Ideally, though, it should be added to all pages. Also, the snippet should always be served (not after accepting cookies, etc.).
 
-Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key provided by the BestPrice Team.
+Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key provided by the BestPrice Team. If it hasn't been provided, you can find it [here](https://merchants.bestprice.gr/account/360).
 
 
 ```html
@@ -38,11 +48,11 @@ bp('connect', 'BESTPRICE_360_KEY_HERE');
 </script>
 ```
 
-## Actions
+### Actions
 
 The following two methods are to be used to track orders and products.
 
-### addOrder
+#### addOrder
 ```js
 bp('addOrder', {
   orderId:  '123456',                        // Order ID (alias: order_id)           [Required] 
@@ -57,7 +67,7 @@ bp('addOrder', {
 });
 ```
 
-### addProduct(s?)
+#### addProduct(s?)
 ```js
 bp('addProduct', {
   orderId:   '123456',                         // Order ID (alias: order_id)      [Required]
@@ -73,7 +83,7 @@ Or, you can pass an array like so:
 bp('addProduct', [products]);
 ```
 
-### debug
+#### debug
 
 ```js
 bp('debug');
@@ -81,9 +91,101 @@ bp('debug');
 
 Will enable logging.
 
-## CORS
+---
+
+## Shopify Integration
+
+### Step 1: Theme Integration
+
+1. Go to **Shopify Admin > Online Store > Themes**
+2. Click **...** next to the active theme → **Edit code**
+3. Open **`theme.liquid`**
+4. Paste this **before `</head>`**:
+
+```html
+<!-- BestPrice 360 Start -->
+<script>
+(function(w,d,s,u) {
+    w['bp']=w['bp']||function(){(w['bp'].q=w['bp'].q||[]).push(arguments)};
+    var a=d.createElement(s),m=d.getElementsByTagName(s)[0];
+    a.async=1;a.src=u;m.parentNode.insertBefore(a,m);
+})(window,document,'script','https://360.bestprice.gr/360.js');
+bp('connect', 'BESTPRICE_360_KEY_HERE');
+</script>
+<!-- BestPrice 360 End -->
+```
+ 
+*Replace `BESTPRICE_360_KEY_HERE` with the merchant's key (e.g. `BP-XXXXX-XXXXXXXXXX`). If it hasn't been provided by the BestPrice Team, you can find it [here](https://merchants.bestprice.gr/account/360).*
+
+5. Click **Save**
+
+---
+
+### Step 2: Custom Pixel
+
+1. Go to **Settings > Customer Events**
+2. Click **Add custom pixel** → name it `BestPrice 360` → **Add pixel**
+3. Paste this code:
+
+```javascript
+analytics.subscribe('checkout_completed', async (event) => {
+    try {
+        const bestpriceKey = 'BESTPRICE_360_KEY_HERE';
+        const cookieName = '__bp-gid';
+
+        let bpSessionValue = await browser.cookie.get(cookieName);
+        if (!bpSessionValue) {
+            bpSessionValue = await browser.localStorage.getItem('__bpgid');
+        }
+
+        const bpQueue = [];
+        bpQueue.push(["connect", bestpriceKey]);
+        bpQueue.push(["addOrder", {
+            orderId:          String(event.data.checkout.order.id),
+            revenue:          String(event.data.checkout.totalPrice.amount),
+            shipping:         event.data.checkout.shippingLine ? String(event.data.checkout.shippingLine.price.amount) : "0",
+            tax:              event.data.checkout.totalTax ? String(event.data.checkout.totalTax.amount) : "0",
+            currency:         event.data.checkout.currencyCode,
+            bp_cookie_session: String(bpSessionValue || "")
+        }]);
+        bpQueue.push(["native", true]);
+
+        if (event.data.checkout.lineItems?.length > 0) {
+            event.data.checkout.lineItems.forEach(item => {
+                bpQueue.push(["addProduct", {
+                    orderId:   String(event.data.checkout.order.id),
+                    productId: String(item.variant ? item.variant.id : item.id),
+                    title:     item.title,
+                    price:     String(item.variant?.price?.amount ?? 0),
+                    quantity:  String(item.quantity)
+                }]);
+            });
+        }
+
+        fetch('https://www.bestprice.gr/api/order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bpQueue),
+            keepalive: true
+        });
+
+    } catch (e) {
+        console.error('BestPrice Tracking Error:', e);
+    }
+});
+```
+
+*Replace `BESTPRICE_360_KEY_HERE` with the merchant's key. If it hasn't been provided by the BestPrice Team, you can find it [here](https://merchants.bestprice.gr/account/360).*
+
+4. Click **Save** and then **Connect**.
+
+---
+
+## Useful Notes for All Integrations
+
+### CORS
 
 If you are utilizing a [CORS policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), you will need to include entries for `*.bestprice.gr` on `script-src` and `connect-src` directives. Otherwise, the network requests that are needed will be blocked.
 
-## Notes
+### Notes
 - The product URLs submitted via the XML feed should match the canonical URLs of the product pages. BestPrice 360 won’t work properly on some browsers if they don't.

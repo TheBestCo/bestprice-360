@@ -21,7 +21,10 @@ Here are the platforms we support so far. Follow the link to install the plugin:
 - CsCart
   - [Marketplace](https://marketplace.cs-cart.com/bestprice-analytics-360.html)
   - [Download](https://www.bestprice.gr/public/360-plugins/cscart/4.x/cs-cart-bestpriceanalytics_4.x-1.0.5.zip)
-- [PrestaShop](https://www.bestprice.gr/public/360-plugins/prestashop/prestashop_bestpriceanalytics-1.6x-1.7x-8.x-1.0.6.zip) (Zip file)
+- PrestaShop
+  - [Unified Plugin (1.7.x, 8.x, 9.1) — v1.1.0](https://www.bestprice.gr/public/360-plugins/prestashop/unified/prestashop_bestprice360-unified-1.1.0.zip) *(recommended)*
+  - [Legacy Plugin (1.6.x) — v1.0.6](https://www.bestprice.gr/public/360-plugins/prestashop/prestashop_bestpriceanalytics-1.6x-1.7x-8.x-1.0.6.zip)
+  - [Source & Changelog on GitHub](https://github.com/TheBestCo/bestprice-360-plugins/tree/master/prestashop)
 
 ---
 

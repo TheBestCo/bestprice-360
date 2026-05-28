@@ -141,6 +141,25 @@ analytics.subscribe('checkout_completed', async (event) => {
             bpSessionValue = await browser.localStorage.getItem('__bpgid');
         }
 
+        // Relay the HMAC-signed click token (if present and unexpired).
+        // BestPrice stashes this in merchant-origin localStorage when
+        // the user lands from a BP outbound link. On the order POST it
+        // lets the server bind the order to the original click's
+        // user_id + product_id — the only attribution channel that
+        // survives Chrome's 3P-cookie blocking and the Shopify Custom
+        // Pixel sandbox cookie isolation. Without this, `fromBestPrice`
+        // will be false for the majority of Shopify orders even from
+        // logged-in BP users.
+        let bpClickToken = '';
+        try {
+            const rawToken = await browser.localStorage.getItem('__bp_click_token');
+            const expStr   = await browser.localStorage.getItem('__bp_click_token_exp');
+            const exp = expStr ? parseInt(expStr, 10) : 0;
+            if (rawToken && exp > Date.now()) {
+                bpClickToken = rawToken;
+            }
+        } catch (_) {}
+
         const bpQueue = [];
         bpQueue.push(["connect", bestpriceKey]);
         bpQueue.push(["addOrder", {
@@ -149,7 +168,8 @@ analytics.subscribe('checkout_completed', async (event) => {
             shipping:         event.data.checkout.shippingLine ? String(event.data.checkout.shippingLine.price.amount) : "0",
             tax:              event.data.checkout.totalTax ? String(event.data.checkout.totalTax.amount) : "0",
             currency:         event.data.checkout.currencyCode,
-            bp_cookie_session: String(bpSessionValue || "")
+            bp_cookie_session: String(bpSessionValue || ""),
+            bp_click_token:    String(bpClickToken || "")
         }]);
         bpQueue.push(["native", true]);
 

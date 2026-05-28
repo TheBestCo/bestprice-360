@@ -184,6 +184,32 @@ analytics.subscribe('checkout_completed', async (event) => {
 
 ---
 
+### Step 3: Verify the Cookie is Being Set
+
+The Custom Pixel in Step 2 reads the `__bp-gid` cookie / `__bpgid` LocalStorage value
+that **Step 1's theme snippet** sets on every page-view. If Step 1 is missing —
+or only loaded on the homepage but not on product/cart pages — the cookie
+never gets set, the Custom Pixel sends an empty `bp_cookie_session`, and
+**every order arrives at BestPrice unattributed**.
+
+To verify Step 1 is doing its job, open the storefront in a regular browser
+window (not a Shopify Preview), visit a **product page**, then a **cart page**,
+then open DevTools → Console and run:
+
+```js
+console.table({
+  cookie:       document.cookie.match(/__bp-gid=([^;]+)/)?.[1] || '(missing)',
+  localStorage: localStorage.getItem('__bpgid') || '(missing)'
+});
+```
+
+Expected: at least one of `cookie` or `localStorage` shows a long base64-like
+string (e.g. `MXNrbU0xLndVal8sb35QZE9oVzAqOA==`). If both show `(missing)`,
+Step 1 is not loading on that page — re-check `theme.liquid` and confirm the
+snippet is **before `</head>`** and not conditionally rendered.
+
+---
+
 ## Useful Notes for All Integrations
 
 ### CORS

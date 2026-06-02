@@ -131,6 +131,34 @@ bp('connect', 'BESTPRICE_360_KEY_HERE');
 3. Paste this code:
 
 ```javascript
+// ── Carrier: capture the BestPrice gid + click token on landing ──
+// The Custom Pixel runs in a sandbox that CANNOT read the storefront page's
+// cookies/localStorage (Shopify isolation + Chrome 3P-cookie blocking). So the
+// `__bp-gid` the theme snippet writes to the page is invisible to checkout.
+// Instead we read the identifiers straight from the BestPrice landing URL
+// (`?__bpgid=…&bp_click_token=…`) on the FIRST page view and stash them in the
+// PIXEL's OWN sandbox storage — which DOES persist through to checkout_completed
+// below. This is the deterministic path that survives the sandbox + 3PCD.
+analytics.subscribe('page_viewed', async (event) => {
+    try {
+        const loc = event.context && event.context.document && event.context.document.location;
+        const qs = new URLSearchParams((loc && loc.search) || '');
+
+        const gid = qs.get('__bpgid');
+        if (gid) {
+            await browser.localStorage.setItem('__bpgid', gid);
+        }
+
+        const token = qs.get('bp_click_token');
+        if (token) {
+            await browser.localStorage.setItem('__bp_click_token', token);
+            await browser.localStorage.setItem('__bp_click_token_exp', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
+        }
+    } catch (e) {
+        console.error('BestPrice Carrier Error:', e);
+    }
+});
+
 analytics.subscribe('checkout_completed', async (event) => {
     try {
         const bestpriceKey = 'BESTPRICE_360_KEY_HERE';

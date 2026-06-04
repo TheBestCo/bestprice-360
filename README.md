@@ -21,10 +21,7 @@ Here are the platforms we support so far. Follow the link to install the plugin:
 - CsCart
   - [Marketplace](https://marketplace.cs-cart.com/bestprice-analytics-360.html)
   - [Download](https://www.bestprice.gr/public/360-plugins/cscart/4.x/cs-cart-bestpriceanalytics_4.x-1.0.5.zip)
-- PrestaShop
-  - [Unified Plugin (1.7.x, 8.x, 9.1) — v1.1.0](https://www.bestprice.gr/public/360-plugins/prestashop/unified/prestashop_bestprice360-unified-1.1.0.zip) *(recommended)*
-  - [Legacy Plugin (1.6.x) — v1.0.6](https://www.bestprice.gr/public/360-plugins/prestashop/prestashop_bestpriceanalytics-1.6x-1.7x-8.x-1.0.6.zip)
-  - [Source & Changelog on GitHub](https://github.com/TheBestCo/bestprice-360-plugins/tree/master/prestashop)
+- [PrestaShop](https://www.bestprice.gr/public/360-plugins/prestashop/prestashop_bestpriceanalytics-1.6x-1.7x-8.x-1.0.6.zip) (Zip file)
 
 ---
 
@@ -131,34 +128,6 @@ bp('connect', 'BESTPRICE_360_KEY_HERE');
 3. Paste this code:
 
 ```javascript
-// ── Carrier: capture the BestPrice gid + click token on landing ──
-// The Custom Pixel runs in a sandbox that CANNOT read the storefront page's
-// cookies/localStorage (Shopify isolation + Chrome 3P-cookie blocking). So the
-// `__bp-gid` the theme snippet writes to the page is invisible to checkout.
-// Instead we read the identifiers straight from the BestPrice landing URL
-// (`?__bpgid=…&bp_click_token=…`) on the FIRST page view and stash them in the
-// PIXEL's OWN sandbox storage — which DOES persist through to checkout_completed
-// below. This is the deterministic path that survives the sandbox + 3PCD.
-analytics.subscribe('page_viewed', async (event) => {
-    try {
-        const loc = event.context && event.context.document && event.context.document.location;
-        const qs = new URLSearchParams((loc && loc.search) || '');
-
-        const gid = qs.get('__bpgid');
-        if (gid) {
-            await browser.localStorage.setItem('__bpgid', gid);
-        }
-
-        const token = qs.get('bp_click_token');
-        if (token) {
-            await browser.localStorage.setItem('__bp_click_token', token);
-            await browser.localStorage.setItem('__bp_click_token_exp', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
-        }
-    } catch (e) {
-        console.error('BestPrice Carrier Error:', e);
-    }
-});
-
 analytics.subscribe('checkout_completed', async (event) => {
     try {
         const bestpriceKey = 'BESTPRICE_360_KEY_HERE';
@@ -169,25 +138,6 @@ analytics.subscribe('checkout_completed', async (event) => {
             bpSessionValue = await browser.localStorage.getItem('__bpgid');
         }
 
-        // Relay the HMAC-signed click token (if present and unexpired).
-        // BestPrice stashes this in merchant-origin localStorage when
-        // the user lands from a BP outbound link. On the order POST it
-        // lets the server bind the order to the original click's
-        // user_id + product_id — the only attribution channel that
-        // survives Chrome's 3P-cookie blocking and the Shopify Custom
-        // Pixel sandbox cookie isolation. Without this, `fromBestPrice`
-        // will be false for the majority of Shopify orders even from
-        // logged-in BP users.
-        let bpClickToken = '';
-        try {
-            const rawToken = await browser.localStorage.getItem('__bp_click_token');
-            const expStr   = await browser.localStorage.getItem('__bp_click_token_exp');
-            const exp = expStr ? parseInt(expStr, 10) : 0;
-            if (rawToken && exp > Date.now()) {
-                bpClickToken = rawToken;
-            }
-        } catch (_) {}
-
         const bpQueue = [];
         bpQueue.push(["connect", bestpriceKey]);
         bpQueue.push(["addOrder", {
@@ -196,8 +146,7 @@ analytics.subscribe('checkout_completed', async (event) => {
             shipping:         event.data.checkout.shippingLine ? String(event.data.checkout.shippingLine.price.amount) : "0",
             tax:              event.data.checkout.totalTax ? String(event.data.checkout.totalTax.amount) : "0",
             currency:         event.data.checkout.currencyCode,
-            bp_cookie_session: String(bpSessionValue || ""),
-            bp_click_token:    String(bpClickToken || "")
+            bp_cookie_session: String(bpSessionValue || "")
         }]);
         bpQueue.push(["native", true]);
 
@@ -229,32 +178,6 @@ analytics.subscribe('checkout_completed', async (event) => {
 *Replace `BESTPRICE_360_KEY_HERE` with the merchant's key. If it hasn't been provided by the BestPrice Team, you can find it [here](https://merchants.bestprice.gr/account/360).*
 
 4. Click **Save** and then **Connect**.
-
----
-
-### Step 3: Verify the Cookie is Being Set
-
-The Custom Pixel in Step 2 reads the `__bp-gid` cookie / `__bpgid` LocalStorage value
-that **Step 1's theme snippet** sets on every page-view. If Step 1 is missing —
-or only loaded on the homepage but not on product/cart pages — the cookie
-never gets set, the Custom Pixel sends an empty `bp_cookie_session`, and
-**every order arrives at BestPrice unattributed**.
-
-To verify Step 1 is doing its job, open the storefront in a regular browser
-window (not a Shopify Preview), visit a **product page**, then a **cart page**,
-then open DevTools → Console and run:
-
-```js
-console.table({
-  cookie:       document.cookie.match(/__bp-gid=([^;]+)/)?.[1] || '(missing)',
-  localStorage: localStorage.getItem('__bpgid') || '(missing)'
-});
-```
-
-Expected: at least one of `cookie` or `localStorage` shows a long base64-like
-string (e.g. `MXNrbU0xLndVal8sb35QZE9oVzAqOA==`). If both show `(missing)`,
-Step 1 is not loading on that page — re-check `theme.liquid` and confirm the
-snippet is **before `</head>`** and not conditionally rendered.
 
 ---
 

@@ -136,10 +136,20 @@ analytics.subscribe('checkout_completed', async (event) => {
         const bestpriceKey = 'BESTPRICE_360_KEY_HERE';
         const cookieName = '__bp-gid';
 
-        let bpSessionValue = await browser.cookie.get(cookieName);
-        if (!bpSessionValue) {
-            bpSessionValue = await browser.localStorage.getItem('__bpgid');
-        }
+        // The pixel runs in a Shopify sandbox and CANNOT read the storefront's
+        // cookie/localStorage. The BestPrice 360.js stamps the visitor identity
+        // (gid + signed click token) into the CART ATTRIBUTES, which DO reach the
+        // pixel here on event.data.checkout.attributes — read those first.
+        const bpAttrs = (event.data.checkout.attributes || []).reduce((m, a) => {
+            if (a && a.key) m[a.key] = a.value;
+            return m;
+        }, {});
+
+        let bpSessionValue = bpAttrs.bp_cookie_session;
+        if (!bpSessionValue) bpSessionValue = await browser.cookie.get(cookieName);
+        if (!bpSessionValue) bpSessionValue = await browser.localStorage.getItem('__bpgid');
+
+        const bpClickToken = bpAttrs.bp_click_token || "";
 
         const bpQueue = [];
         bpQueue.push(["connect", bestpriceKey]);
@@ -149,7 +159,8 @@ analytics.subscribe('checkout_completed', async (event) => {
             shipping:         event.data.checkout.shippingLine ? String(event.data.checkout.shippingLine.price.amount) : "0",
             tax:              event.data.checkout.totalTax ? String(event.data.checkout.totalTax.amount) : "0",
             currency:         event.data.checkout.currencyCode,
-            bp_cookie_session: String(bpSessionValue || "")
+            bp_cookie_session: String(bpSessionValue || ""),
+            bp_click_token:    String(bpClickToken || "")
         }]);
         bpQueue.push(["native", true]);
 

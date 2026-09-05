@@ -25,6 +25,9 @@ Here are the platforms we support so far. Follow the link to install the plugin:
   - [Unified Plugin (1.7.x, 8.x, 9.1) — v1.1.0](https://www.bestprice.gr/public/360-plugins/prestashop/unified/prestashop_bestprice360-unified-1.1.0.zip) *(recommended)*
   - [Legacy Plugin (1.6.x) — v1.0.6](https://www.bestprice.gr/public/360-plugins/prestashop/prestashop_bestpriceanalytics-1.6x-1.7x-8.x-1.0.6.zip)
   - [Source & Changelog on GitHub](https://github.com/TheBestCo/bestprice-360-plugins/tree/master/prestashop)
+- OpenCart
+  - [Marketplace](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118)
+  - [Source & Changelog on GitHub](https://github.com/TheBestCo/bestprice-360-plugins/tree/master/opencart)
 
 ---
 

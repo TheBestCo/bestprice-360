@@ -36,7 +36,7 @@ If your store is not based on any of the platforms listed above, you can install
 
 Place the following snippet right before closing the `</body>` tag (not inside `<head>`).
 
-NOTE: The snippet must be added to the product and cart pages. Ideally, though, it should be added to all pages. Also, the snippet should always be served (not after accepting cookies, etc.).
+NOTE: The snippet must be added to product pages, cart pages, **and the checkout success / thank-you (order confirmation) page**. On the success page, emit `addOrder` and at least one `addProduct` only after the purchase is confirmed; installing the loader only on product and cart pages cannot register completed orders. Ideally, the snippet should be added to all pages. It should always be served (not only after accepting cookies, etc.).
 
 Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key provided by the BestPrice Team. If it hasn't been provided, you can find it [here](https://merchants.bestprice.gr/account/360).
 
@@ -135,12 +135,33 @@ analytics.subscribe('checkout_completed', async (event) => {
     try {
         const bestpriceKey = 'BESTPRICE_360_KEY_HERE';
         const cookieName = '__bp-gid';
+        const checkout = event?.data?.checkout;
+        const rawOrderId = checkout?.order?.id;
+
+        // Shopify documents several MoneyV2 fields as nullable. Preserve a
+        // real zero, but reject missing / non-numeric amounts instead of
+        // serializing "undefined" or silently turning missing prices into 0.
+        const readAmount = (money) => {
+            const raw = money?.amount;
+            if (raw === null || raw === undefined || raw === '') return null;
+            const amount = Number(raw);
+            return Number.isFinite(amount) ? amount : null;
+        };
+
+        const revenue = readAmount(checkout?.totalPrice);
+        if (!checkout || rawOrderId === null || rawOrderId === undefined ||
+            !String(rawOrderId).trim() || revenue === null) {
+            throw new Error('checkout_completed event is missing order id or total price');
+        }
+
+        const orderId = String(rawOrderId);
 
         // The pixel runs in a Shopify sandbox and CANNOT read the storefront's
         // cookie/localStorage. The BestPrice 360.js stamps the visitor identity
         // (gid + signed click token) into the CART ATTRIBUTES, which DO reach the
         // pixel here on event.data.checkout.attributes — read those first.
-        const bpAttrs = (event.data.checkout.attributes || []).reduce((m, a) => {
+        const attributes = Array.isArray(checkout.attributes) ? checkout.attributes : [];
+        const bpAttrs = attributes.reduce((m, a) => {
             if (a && a.key) m[a.key] = a.value;
             return m;
         }, {});
@@ -153,35 +174,67 @@ analytics.subscribe('checkout_completed', async (event) => {
 
         const bpQueue = [];
         bpQueue.push(["connect", bestpriceKey]);
-        bpQueue.push(["addOrder", {
-            orderId:          String(event.data.checkout.order.id),
-            revenue:          String(event.data.checkout.totalPrice.amount),
-            shipping:         event.data.checkout.shippingLine ? String(event.data.checkout.shippingLine.price.amount) : "0",
-            tax:              event.data.checkout.totalTax ? String(event.data.checkout.totalTax.amount) : "0",
-            currency:         event.data.checkout.currencyCode,
+        const order = {
+            orderId:           orderId,
+            revenue:           String(revenue),
+            shipping:          String(readAmount(checkout.shippingLine?.price) ?? 0),
+            tax:               String(readAmount(checkout.totalTax) ?? 0),
             bp_cookie_session: String(bpSessionValue || ""),
             bp_click_token:    String(bpClickToken || "")
-        }]);
+        };
+        const currency = checkout.currencyCode || checkout.totalPrice?.currencyCode;
+        if (currency) order.currency = String(currency);
+        bpQueue.push(["addOrder", order]);
         bpQueue.push(["native", true]);
 
-        if (event.data.checkout.lineItems?.length > 0) {
-            event.data.checkout.lineItems.forEach(item => {
-                bpQueue.push(["addProduct", {
-                    orderId:   String(event.data.checkout.order.id),
-                    productId: String(item.variant ? item.variant.id : item.id),
-                    title:     item.title,
-                    price:     String(item.variant?.price?.amount ?? 0),
-                    quantity:  String(item.quantity)
-                }]);
-            });
+        const lineItems = Array.isArray(checkout.lineItems) ? checkout.lineItems : [];
+        let productCount = 0;
+        lineItems.forEach((item) => {
+            const rawProductId = item?.variant?.id ?? item?.id;
+            const quantity = Number(item?.quantity);
+            let price = readAmount(item?.variant?.price);
+            if (price === null) price = readAmount(item?.unitPrice);
+            if (price === null) price = readAmount(item?.price);
+
+            // finalLinePrice is the whole line. Use it only as a last-resort
+            // unit-price fallback and only when quantity is usable.
+            if (price === null && Number.isFinite(quantity) && quantity > 0) {
+                const finalLinePrice = readAmount(item?.finalLinePrice);
+                if (finalLinePrice !== null) price = finalLinePrice / quantity;
+            }
+
+            if (rawProductId === null || rawProductId === undefined ||
+                !String(rawProductId).trim() || !Number.isFinite(quantity) ||
+                quantity <= 0 || price === null) {
+                console.warn('BestPrice Tracking: skipped line item with missing id, quantity, or price');
+                return;
+            }
+
+            const productId = String(rawProductId);
+            bpQueue.push(["addProduct", {
+                orderId:   orderId,
+                productId: productId,
+                title:     String(item?.title || item?.variant?.product?.title || `Product ${productId}`),
+                price:     String(price),
+                quantity:  String(quantity)
+            }]);
+            productCount += 1;
+        });
+
+        if (productCount === 0) {
+            throw new Error('checkout_completed event has no line item with a usable id, quantity, and price');
         }
 
-        fetch('https://www.bestprice.gr/api/order', {
+        const response = await fetch('https://www.bestprice.gr/api/order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(bpQueue),
             keepalive: true
         });
+
+        if (!response || !response.ok) {
+            throw new Error(`BestPrice order request failed${response ? ` (${response.status})` : ''}`);
+        }
 
     } catch (e) {
         console.error('BestPrice Tracking Error:', e);
@@ -192,6 +245,22 @@ analytics.subscribe('checkout_completed', async (event) => {
 *Replace `BESTPRICE_360_KEY_HERE` with the merchant's key. If it hasn't been provided by the BestPrice Team, you can find it [here](https://merchants.bestprice.gr/account/360).*
 
 4. Click **Save** and then **Connect**.
+
+### Save Order prompt on Shopify
+
+Shopify Custom Pixels run in a sandboxed iframe and cannot access or write to
+the top-frame DOM. For that reason, the pixel itself cannot display the
+BestPrice iframe on the Thank you page. Do not defer or replay that popup on a
+later storefront page: it would be detached from the checkout action and could
+surprise or annoy the buyer.
+
+The supported way to show Save Order immediately on the Thank you page is a
+Shopify Checkout UI extension, using a target such as
+[`purchase.thank-you.block.render`](https://shopify.dev/docs/api/checkout-ui-extensions/latest/targets/thank-you/block).
+Use a compact inline block with an explicit **Save to BestPrice** action; open
+login only after that click. This requires a BestPrice Shopify app/extension to
+be installed and placed by the merchant; a Custom Pixel cannot provide that UI
+surface.
 
 ---
 

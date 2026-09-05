@@ -23,8 +23,12 @@ Snippet
 Place the following snippet right before closing the ``</body>`` tag
 (not inside ``<head>``).
 
-NOTE: The snippet need to be added to the product page and to the cart
-page. Ideally, though, it should be added to all pages.
+NOTE: The snippet must be added to product pages, cart pages, and the
+checkout success / thank-you (order confirmation) page. On the success
+page, emit ``addOrder`` and at least one ``addProduct`` only after the
+purchase is confirmed; installing the loader only on product and cart
+pages cannot register completed orders. Ideally, the snippet should be
+added to all pages and should always be served.
 
 Make sure you replace the ``BESTPRICE_360_KEY_HERE`` with the BestPrice
 360 key provided by the BestPrice Team.

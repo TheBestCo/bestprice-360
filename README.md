@@ -275,3 +275,4 @@ If you are utilizing a [CORS policy](https://developer.mozilla.org/en-US/docs/We
 
 ### Notes
 - The product URLs submitted via the XML feed should match the canonical URLs of the product pages. BestPrice 360 won’t work properly on some browsers if they don't.
+- The `productId` parameter in the tracking script (`addProduct`) must match the product ID submitted in the store's XML feed. Any discrepancies may lead to data inconsistencies.

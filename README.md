@@ -54,6 +54,19 @@ bp('connect', 'BESTPRICE_360_KEY_HERE');
 </script>
 ```
 
+> [!NOTE]
+> **Global `bp` variable conflict:**
+> The snippet defines a global function named `bp`. If your store already uses a global variable named `bp` (for example, Magento 1 stores with RWD-based themes define `bp` for responsive breakpoints), the snippet will fail and orders will not be tracked.
+> 
+> **How to check:** Before installing, open your browser's Developer Console on any page of your store and run `typeof bp`. If the result is not `"undefined"` (e.g. returns `"object"`), you have a naming collision.
+> 
+> **Solution:** Use `bpa` instead of `bp`. In the snippet above, replace `'bp'` with `'bpa'`:
+> ```javascript
+> (window, document, 'bpa', '//360.bestprice.gr/360.js');
+> ```
+> and make sure all subsequent tracking calls use `bpa(...)` (e.g. `bpa('connect', ...)`, `bpa('addOrder', ...)`, `bpa('addProduct', ...)`).
+> If you need assistance, please contact the BestPrice team.
+
 ### Actions
 
 The following two methods are to be used to track orders and products.

@@ -1,10 +1,21 @@
 # BestPrice 360 Installation Guide
 
 ## Table of Contents
+- [Quick start](#quick-start)
 - [Plugins](#plugins)
 - [Custom Installation](#custom-installation)
 - [Shopify Integration](#shopify-integration)
 - [Useful Notes for All Integrations](#useful-notes-for-all-integrations)
+
+---
+
+## Quick start
+
+| Your store | What to do |
+|---|---|
+| WooCommerce, Magento, CS-Cart, PrestaShop, OpenCart | Install the plugin: [Plugins](#plugins) |
+| Shopify | Theme snippet + Custom Pixel: [Shopify Integration](#shopify-integration) |
+| Any other platform | Snippet + `addOrder` / `addProduct`: [Custom Installation](#custom-installation) |
 
 ---
 
@@ -14,20 +25,13 @@ The easiest way to install [BestPrice](https://www.bestprice.gr) 360º in your s
 
 Here are the platforms we support so far. Follow the link to install the plugin:
 
-- [Woocommerce](https://wordpress.org/plugins/bestprice-analytics-integration/)
-- Magento
-  - [Marketplace](https://marketplace.magento.com/bestprice-bestpriceanalytics.html)
-  - [Download](https://www.bestprice.gr/public/assets/360/magento_bestprice_bestpriceanalytics_2.x-1.0.6.zip)
-- CsCart
-  - [Marketplace](https://marketplace.cs-cart.com/bestprice-analytics-360.html)
-  - [Download](https://www.bestprice.gr/public/360-plugins/cscart/4.x/cs-cart-bestpriceanalytics_4.x-1.0.5.zip)
-- PrestaShop
-  - [Unified Plugin (1.7.x, 8.x, 9.1) — v1.1.0](https://www.bestprice.gr/public/360-plugins/prestashop/unified/prestashop_bestprice360-unified-1.1.0.zip) *(recommended)*
-  - [Legacy Plugin (1.6.x) — v1.0.6](https://www.bestprice.gr/public/360-plugins/prestashop/prestashop_bestpriceanalytics-1.6x-1.7x-8.x-1.0.6.zip)
-  - [Source & Changelog on GitHub](https://github.com/TheBestCo/bestprice-360-plugins/tree/master/prestashop)
-- OpenCart
-  - [Marketplace](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118)
-  - [Source & Changelog on GitHub](https://github.com/TheBestCo/bestprice-360-plugins/tree/master/opencart)
+| Platform | Install |
+|---|---|
+| Woocommerce | [WordPress.org](https://wordpress.org/plugins/bestprice-analytics-integration/) |
+| Magento | [Download](https://www.bestprice.gr/public/assets/360/magento_bestprice_bestpriceanalytics_2.x-1.0.6.zip) |
+| CsCart | [Marketplace](https://marketplace.cs-cart.com/bestprice-analytics-360.html)<br>[Download](https://www.bestprice.gr/public/360-plugins/cscart/4.x/cs-cart-bestpriceanalytics_4.x-1.0.5.zip) |
+| PrestaShop | [Unified Plugin (1.7.x, 8.x, 9.1) — v1.1.0](https://www.bestprice.gr/public/360-plugins/prestashop/unified/prestashop_bestprice360-unified-1.1.0.zip) *(recommended)*<br>[Legacy Plugin (1.6.x) — v1.0.6](https://www.bestprice.gr/public/360-plugins/prestashop/prestashop_bestpriceanalytics-1.6x-1.7x-8.x-1.0.6.zip)<br>[Source & Changelog on GitHub](https://github.com/TheBestCo/bestprice-360-plugins/tree/master/prestashop) |
+| OpenCart | [Marketplace](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=38118)<br>[Source & Changelog on GitHub](https://github.com/TheBestCo/bestprice-360-plugins/tree/master/opencart) |
 
 ---
 
@@ -37,9 +41,10 @@ If your store is not based on any of the platforms listed above, you can install
 
 ### Snippet
 
-Place the following snippet right before closing the `</body>` tag (not inside `<head>`).
-
-NOTE: The snippet must be added to product pages, cart pages, **and the checkout success / thank-you (order confirmation) page**. On the success page, emit `addOrder` and at least one `addProduct` only after the purchase is confirmed; installing the loader only on product and cart pages cannot register completed orders. Ideally, the snippet should be added to all pages. It should always be served (not only after accepting cookies, etc.).
+> [!IMPORTANT]
+> Place the following snippet right before closing the `</body>` tag. Any `addOrder` / `addProduct` call must be placed **after** it (see [Actions](#actions)), otherwise the order will not be tracked.
+>
+> The snippet must be added to product pages, cart pages, **and the checkout success / thank-you (order confirmation) page**. On the success page, emit `addOrder` and at least one `addProduct` only after the order is placed (not on cart/checkout steps), regardless of payment method or payment status (e.g. including unpaid bank transfers or cash on delivery); installing the loader only on product and cart pages cannot register completed orders. Ideally, the snippet should be added to all pages. It should always be served (not only after accepting cookies, etc.).
 
 Make sure you replace the `BESTPRICE_360_KEY_HERE` with the BestPrice 360 key provided by the BestPrice Team. If it hasn't been provided, you can find it [here](https://merchants.bestprice.gr/account/360).
 
@@ -54,18 +59,27 @@ bp('connect', 'BESTPRICE_360_KEY_HERE');
 </script>
 ```
 
-> [!NOTE]
-> **Global `bp` variable conflict:**
-> The snippet defines a global function named `bp`. If your store already uses a global variable named `bp` (for example, Magento 1 stores with RWD-based themes define `bp` for responsive breakpoints), the snippet will fail and orders will not be tracked.
-> 
-> **How to check:** Before installing, open your browser's Developer Console on any page of your store and run `typeof bp`. If the result is not `"undefined"` (e.g. returns `"object"`), you have a naming collision.
-> 
-> **Solution:** Use `bpa` instead of `bp`. In the snippet above, replace `'bp'` with `'bpa'`:
-> ```javascript
-> (window, document, 'bpa', '//360.bestprice.gr/360.js');
-> ```
-> and make sure all subsequent tracking calls use `bpa(...)` (e.g. `bpa('connect', ...)`, `bpa('addOrder', ...)`, `bpa('addProduct', ...)`).
-> If you need assistance, please contact the BestPrice team.
+<details>
+<summary><b>Global <code>bp</code> variable conflict</b> (e.g. Magento 1 RWD-based themes)</summary>
+
+The snippet defines a global function named `bp`. If your store already uses a global variable named `bp` (for example, Magento 1 stores with RWD-based themes define `bp` for responsive breakpoints), the snippet will fail and orders will not be tracked.
+
+**How to check:** Before installing, open your browser's Developer Console on any page of your store and run `typeof bp`. If the result is not `"undefined"` (e.g. returns `"object"`), you have a naming collision.
+
+**Solution:** Use `bpa` instead of `bp`. Use this snippet instead of the one above:
+```html
+<script>
+(function (a, b, c, d, s) {a.__bp360 = c;a[c] = a[c] || function (){(a[c].q = a[c].q || []).push(arguments);};
+s = b.createElement('script'); s.async = true; s.src = d; s.charset = 'utf-8'; (b.body || b.head).appendChild(s);})
+(window, document, 'bpa', '//360.bestprice.gr/360.js');
+
+bpa('connect', 'BESTPRICE_360_KEY_HERE');
+</script>
+```
+and make sure all subsequent tracking calls use `bpa(...)` (e.g. `bpa('addOrder', ...)`, `bpa('addProduct', ...)`).
+If you need assistance, please contact the BestPrice team.
+
+</details>
 
 ### Actions
 
@@ -75,31 +89,35 @@ The following two methods are to be used to track orders and products.
 ```js
 bp('addOrder', {
   orderId:  '123456',                        // Order ID (alias: order_id)           [Required] 
-  revenue:  '1315.25',                       // Grand Total (Cost + Tax + Shipping)  [Required]
+  revenue:  '1315.25',                       // Grand Total paid by the customer, incl. tax and shipping  [Required]
   shipping: '5.45',                          // Shipping Cost                        [Required]
   tax:      '301.25',                        // Tax                                  [Required]
 
   method: 'card|paypal|ondelivery|deposit|atstore',  // [Optional]
   currency: 'euro',                          // [Optional]
 
-  // products: []                            // You can pass them here
+  // products: [ { productId, title, price, quantity }, ... ]
+  //           Optional: you can pass the products here instead of using addProduct
 });
 ```
 
-#### addProduct(s?)
+#### addProduct
 ```js
 bp('addProduct', {
   orderId:   '123456',                         // Order ID (alias: order_id)      [Required]
   productId: '111222',                         // Product ID (alias: product_id)  [Required]
-  title:     'Apple IPhone 11 (64GB) Red EU',  // Product Title (alias: name)     [Required]
-  price:     '654.90',                         // Price, should include tax       [Required]
+  title:     'Apple iPhone 16 (128GB) Black',  // Product Title (alias: name)     [Required]
+  price:     '654.90',                         // Unit price (per item), incl. tax [Required]
   quantity:  '2'                               // Quantity                        [Required]
 });
 ```
 Or, you can pass an array like so:
 
 ```js
-bp('addProduct', [products]);
+bp('addProduct', [
+  { orderId: '123456', productId: '111222', title: 'Apple iPhone 16 (128GB) Black', price: '654.90', quantity: '2' },
+  { orderId: '123456', productId: '333444', title: 'Apple 20W USB-C Power Adapter', price: '19.90', quantity: '1' }
+]);
 ```
 
 #### debug
@@ -262,7 +280,12 @@ analytics.subscribe('checkout_completed', async (event) => {
 
 4. Click **Save** and then **Connect**.
 
-### Save Order prompt on Shopify
+> [!NOTE]
+> The pixel sends the Shopify **variant ID** as `productId`. Make sure the
+> product ID in your BestPrice XML feed is the same variant ID (see [Notes](#notes)).
+
+<details>
+<summary><b>Save Order prompt on Shopify</b> (for developers)</summary>
 
 Shopify Custom Pixels run in a sandboxed iframe and cannot access or write to
 the top-frame DOM. For that reason, the pixel itself cannot display the
@@ -278,13 +301,22 @@ login only after that click. This requires a BestPrice Shopify app/extension to
 be installed and placed by the merchant; a Custom Pixel cannot provide that UI
 surface.
 
+*This app/extension is not available yet.*
+
+</details>
+
 ---
 
 ## Useful Notes for All Integrations
 
-### CORS
+### Content Security Policy (CSP)
 
-If you are utilizing a [CORS policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), you will need to include entries for `*.bestprice.gr` on `script-src` and `connect-src` directives. Otherwise, the network requests that are needed will be blocked.
+If you are utilizing a [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP), you will need to include entries for `*.bestprice.gr` on `script-src` and `connect-src` directives. Otherwise, the network requests that are needed will be blocked.
+
+### Checklist before going live
+
+- [ ] **All payment methods.** Send the order (`addOrder` + `addProduct`) when it is placed, for every payment method you offer, regardless of payment status: cash on delivery, bank transfer, pay at store, card, PayPal, IRIS etc. Online payments often return from the bank or provider to a different page, or run inside an iframe; make sure the order data is on the page the customer finally lands on. Place at least one test order with an online payment method, not only with cash on delivery.
+- [ ] **Caching.** Do not cache the order confirmation page, and exclude the BestPrice snippet from "delay JavaScript" features (e.g. LiteSpeed Cache, WP Rocket, Perfmatters, NitroPack).
 
 ### Notes
 - The product URLs submitted via the XML feed should match the canonical URLs of the product pages. BestPrice 360 won’t work properly on some browsers if they don't.
